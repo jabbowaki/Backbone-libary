@@ -7,6 +7,17 @@ app.BookView = Backbone.View.extend({
   className: 'bookContainer',
   template: _.template( $('#bookTemplate').html() ),
 
+  events: {
+    'click .delete' : 'deleteBook'
+  },
+
+  deleteBook: function() {
+    //deletes the model
+    this.model.destroy();
+    //deletes the view
+    this.remove();
+  },
+
   render: function() {
     //from book -> this.el is what we defined in tagName.
     //use $el to get access to jQuery html() function
