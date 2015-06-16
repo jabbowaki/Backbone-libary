@@ -22,8 +22,8 @@ var port = 4711;
 app.listen(port, function() {
   console.log('express server now listening on port %d in %s mode', port, app.settings.env);
 });
-app.get('/', function (req, res) {
-  res.render('index', {});
+//makes site viewable on localhost:4711/api
+app.get('/api', function (req, res) {
+  res.send("Yo this works");
 });
 
-console.log("made it");
