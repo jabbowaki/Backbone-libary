@@ -27,3 +27,59 @@ app.get('/api', function (req, res) {
   res.send("Yo this works");
 });
 
+//Connects to MongoDB
+mongoose.connect('mongodb://localhost/library_database');
+
+//Schema Design
+var Book = new mongoose.Schema({
+  title: String,
+  author: String,
+  releaseDate: Date
+});
+
+//Models
+var BookModel = mongoose.model('Book', Book);
+//Get a list of all books or throw error
+app.get( '/api/books', function( request, response ) {
+    return BookModel.find( function( err, books ) {
+        if( !err ) {
+            return response.send( books );
+        } else {
+            return console.log( err );
+        }
+    });
+});
+
+//add a new book
+app.post('/api/books', function(response, request){
+  var book = new BookModel({
+    title: request.body.title,
+    author: request.body.author,
+    releaseDate: request.body.releaseDate
+  });
+  book.save(function(error) {
+    if (!error) {
+      console.log('created');
+      return response.send(book);
+    } else{
+      console.log(error);
+    }
+  });
+});
+
+//Configure server
+app.configure(function() {
+  //parses request body, populated request.body
+  app.use(express.bodyParser());
+  //checks request.body for HTTP method & overrides
+  app.use(express.methodOverride());
+  //perform route lookup based on url and HTTP method
+  app.use(app.router);
+  //Where to serve static content aka index.html
+  app.use(express.static(path.join(application_root, 'site')));
+  //show all errors in development
+  app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
+});
+
+
+
