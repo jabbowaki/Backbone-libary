@@ -51,7 +51,7 @@ app.get( '/api/books', function( request, response ) {
 });
 
 //add a new book
-app.post('/api/books', function(response, request){
+app.post('/api/books', function(request, response){
   var book = new BookModel({
     title: request.body.title,
     author: request.body.author,
@@ -64,6 +64,51 @@ app.post('/api/books', function(response, request){
     } else{
       console.log(error);
     }
+  });
+});
+
+
+//update a book
+app.put('/api/books/:id', function(request, response){
+  console.log('Updating book ' + request.book.title);
+  return BookModel.findById(request.params.id, function(err, book){
+    book.title = request.body.title;
+    book.author = request.body.author;
+    book.releaseDate = request.body.releaseDate;
+
+    return book.save(function(err){
+      if (!err) {
+        console.log('book updated');
+        return response.send(book);
+      }else {
+        console.log(err);
+      }
+    });
+  });
+});
+
+//get a single book by id
+app.get('/api/books/:id', function(request, response) {
+  return BookModel.findById( request.params.id, function(err, book) {
+    if(!err){
+      return response.send(book);
+    } else {
+      return console.log(err);
+    }
+  });
+});
+
+//delete it! DELETE IT NOW!
+app.delete('/api/books/:id', function(request, response) {
+  console.log('Deleting book wiht id: ' + request.params.id);
+  return BookModel.findById(request.params.id, function(err, book){
+    return book.remove(function(err){
+      if (!err){
+        console.log('Book has been terminated');
+      } else{
+        console.log(err);
+      }
+    });
   });
 });
 
